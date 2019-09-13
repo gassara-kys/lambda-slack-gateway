@@ -1,0 +1,10 @@
+{
+  "team_domain": "team.example.com",
+  "channel_name": "hoge-channel",
+  "user_name": "alice",
+  "command": "/alert",
+  "text": "delete",
+  "request_body": "token=xxx&team_id=xxx&team_domain=xxx&channel_id=xxx&channel_name=xxx&user_id=xxx&user_name=xxx&command=xxx&text=xxx&response_url=xxx",
+  "x_slack_request_timestamp": "1500000000",
+  "x_slack_signature": "v0=647da32115de383e506d760f70ba248d9915590776a7ac3b3dad368c93d9201e"
+}
