@@ -16,19 +16,16 @@ var responseHeader = map[string]string{
 	"Content-Type": "application/json",
 }
 
-type request struct {
-	TeamDomain       string `json:"team_domain"`
-	ChannelName      string `json:"channel_name"`
-	UserName         string `json:"user_name"`
-	Command          string `json:"command"`
-	Text             string `json:"text"`
-	RequestBody      string `json:"request_body"`              // all request body
-	RequestTimestamp string `json:"x_slack_request_timestamp"` // X-Slack-Request-Timestamp header
-	SlackSignature   string `json:"x_slack_signature"`         // X-Slack-Signature header
-}
+func handler(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// parse request
+	req, err := newRequestForm(&event)
+	if err != nil {
+		return serverError(err)
+	}
+	if err := req.valdate(); err != nil {
+		return clientError(http.StatusBadRequest)
+	}
 
-func handler(ctx context.Context, req request) (events.APIGatewayProxyResponse, error) {
-	log.Printf("START lambda function")
 	// authorization
 	ok, err := authrize(req)
 	if err != nil {
@@ -42,21 +39,18 @@ func handler(ctx context.Context, req request) (events.APIGatewayProxyResponse, 
 	var res *map[string]interface{}
 	switch req.Text {
 	case "get":
-		res, err = getAlertCount()
+		res, err = getAlertCount(req)
 		if err != nil {
 			return serverError(err)
 		}
 	case "delete":
 		print("delete")
-		res, err = deleteAlert()
+		res, err = deleteAlert(req)
 		if err != nil {
 			return serverError(err)
 		}
 	default:
-		usage := map[string]interface{}{
-			"usage": "hogehogehogehoge",
-		}
-		res = &usage
+		res = getUsage()
 	}
 
 	resJSON, err := json.Marshal(res)

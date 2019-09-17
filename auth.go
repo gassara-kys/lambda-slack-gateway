@@ -16,7 +16,7 @@ type slackConfig struct {
 	SkipTimeValid string `default:"" split_words:"true"`         // SLACK_SKIP_TIME_VALID
 }
 
-func authrize(req request) (bool, error) {
+func authrize(req *requestForm) (bool, error) {
 	var conf slackConfig
 	if err := envconfig.Process("slack", &conf); err != nil {
 		return false, err
@@ -24,6 +24,7 @@ func authrize(req request) (bool, error) {
 	// valid request time
 	reqUnix, err := strconv.ParseInt(req.RequestTimestamp, 10, 64)
 	if err != nil {
+		log.Printf("[ERROR]Request time parse error: %s", req.RequestTimestamp)
 		return false, err
 	}
 	max := time.Now().Unix()
@@ -33,6 +34,7 @@ func authrize(req request) (bool, error) {
 	}
 	log.Printf("[INFO]RequestTimeVlidation: min=%d, reqUnix=%d, max=%d", min, reqUnix, max)
 	if reqUnix < min || reqUnix > max {
+		log.Printf("[ERROR]Request time is too old.: %s", req.RequestTimestamp)
 		return false, nil
 	}
 
@@ -40,6 +42,7 @@ func authrize(req request) (bool, error) {
 	base := "v0:" + req.RequestTimestamp + ":" + req.RequestBody
 	signature := "v0=" + makeHMACSha256(base, conf.SigningSecret)
 	if signature != req.SlackSignature {
+		log.Printf("[ERROR]SlackSignature is invalid.: %s", req.SlackSignature)
 		return false, nil
 	}
 

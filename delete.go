@@ -2,9 +2,12 @@ package main
 
 import (
 	"log"
+	"strconv"
+
+	"github.com/nlopes/slack"
 )
 
-func deleteAlert() (*map[string]interface{}, error) {
+func deleteAlert(req *requestForm) (*map[string]interface{}, error) {
 	var result map[string]interface{}
 	table, err := getAlertTable()
 	if err != nil {
@@ -26,7 +29,27 @@ func deleteAlert() (*map[string]interface{}, error) {
 	}
 	log.Printf("[DELETE]%d alert deleted.", len(records))
 	result = map[string]interface{}{
-		"DeleteCount": len(records),
+		"response_type": "in_channel",
+		"attachments": []slack.Attachment{
+			slack.Attachment{
+				Title: "/alert command called",
+				Color: "#764FA5",
+				Fields: []slack.AttachmentField{
+					slack.AttachmentField{
+						Title: "operation",
+						Value: "delete",
+					},
+					slack.AttachmentField{
+						Title: "called by",
+						Value: req.UserName,
+					},
+					slack.AttachmentField{
+						Title: "delete_count",
+						Value: strconv.Itoa(len(records)),
+					},
+				},
+			},
+		},
 	}
 	return &result, nil
 }
