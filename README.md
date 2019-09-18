@@ -1,6 +1,6 @@
 # lambda-slack-geteway
 
-gateway function form slack requsts.
+gateway function form slack requests.
 ```
 slack(slash_command) -> API-Gateway -> Lambda(this)
 ```
@@ -8,7 +8,7 @@ slack(slash_command) -> API-Gateway -> Lambda(this)
 ## Gateway
 - authorization
   - valid time and signature with token.
-  - see [slack documet](https://api.slack.com/docs/verifying-requests-from-slack)
+  - see [slack document](https://api.slack.com/docs/verifying-requests-from-slack)
 - proxy request
   - get parameter
     - get data from DynamoDB table.
@@ -25,7 +25,7 @@ slack(slash_command) -> API-Gateway -> Lambda(this)
 
 ## Run Local
 ```bash
-# make sure that the required IAM is set in advance
+# make sure that the required IAM is set on local machine in advance.
 $ make
 ```
 
