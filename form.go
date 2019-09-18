@@ -26,7 +26,7 @@ func newRequestForm(event *events.APIGatewayProxyRequest) (*requestForm, error) 
 	form.RequestBody = event.Body
 	values, err := url.ParseQuery(form.RequestBody)
 	if err != nil {
-		return &form, fmt.Errorf("parse query error :%v", err)
+		return &form, fmt.Errorf("parse query error :%#v", err)
 	}
 	form.TeamDomain = values.Get("team_domain")
 	form.ChannelName = values.Get("channel_name")

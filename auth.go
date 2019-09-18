@@ -16,7 +16,7 @@ type slackConfig struct {
 	SkipTimeValid string `default:"" split_words:"true"`         // SLACK_SKIP_TIME_VALID
 }
 
-func authrize(req *requestForm) (bool, error) {
+func authorize(req *requestForm) (bool, error) {
 	var conf slackConfig
 	if err := envconfig.Process("slack", &conf); err != nil {
 		return false, err
@@ -34,7 +34,7 @@ func authrize(req *requestForm) (bool, error) {
 	}
 	log.Printf("[INFO]RequestTimeVlidation: min=%d, reqUnix=%d, max=%d", min, reqUnix, max)
 	if reqUnix < min || reqUnix > max {
-		log.Printf("[ERROR]Request time is too old.: %s", req.RequestTimestamp)
+		log.Printf("[ERROR]Request time is out of range.: %s", req.RequestTimestamp)
 		return false, nil
 	}
 

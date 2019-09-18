@@ -27,7 +27,7 @@ func handler(ctx context.Context, event events.APIGatewayProxyRequest) (events.A
 	}
 
 	// authorization
-	ok, err := authrize(req)
+	ok, err := authorize(req)
 	if err != nil {
 		return serverError(err)
 	}
